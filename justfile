@@ -1,6 +1,7 @@
 export github_actions := env_var_or_default('GITHUB_ACTIONS', '0')
 
-@clean:
+clean:
+    #!/usr/bin/env bash
     rm -rf build
     rm -rf tmp
     mkdir -p build/{coverage,logs}
