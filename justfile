@@ -45,12 +45,13 @@ phpstan level='6': clean
 @phpcpd: clean
     phpcpd --log-pmd build/logs/pmd-cpd.xml src
 
-@dependencies:
-    decomposer install --no-dev
+dependencies type='dev':
+    #!/usr/bin/env bash
+    if [ "{{type}}" = "release" ]; then
+      args="--no-dev"
+    else
+      args=""
+    fi
+    decomposer install $args
 
-@dev-dependencies:
-    decomposer install
-
-@setup: dependencies
-
-@dev-setup: dev-dependencies
+@setup type='dev': (dependencies type)
