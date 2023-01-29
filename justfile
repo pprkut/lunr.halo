@@ -52,6 +52,13 @@ phpstan level='6':
 @phpcpd: (clean_log 'pmd-cpd.xml')
     phpcpd --log-pmd build/logs/pmd-cpd.xml src
 
+@pdepend: (clean_log 'jdepend.xml') (clean_dir 'pdepend')
+    pdepend \
+      --jdepend-xml=build/logs/jdepend.xml \
+      --jdepend-chart=build/pdepend/dependencies.svg \
+      --overview-pyramid=build/pdepend/overview-pyramid.svg \
+      src
+
 dependencies type='dev':
     #!/usr/bin/env bash
     if [ "{{type}}" = "release" ]; then
