@@ -1,12 +1,19 @@
 export github_actions := env_var_or_default('GITHUB_ACTIONS', '0')
 
-clean:
-    #!/usr/bin/env bash
-    rm -rf build
+@clean:
     rm -rf tmp
-    mkdir -p build/{coverage,logs}
 
-phpunit testsuite='': clean
+[private]
+@clean_log file: clean
+    mkdir -p build/logs
+    rm -f build/logs/{{file}}
+
+[private]
+@clean_dir directory: clean
+    mkdir -p build/{{directory}}
+    rm -rf build/{{directory}}/*
+
+phpunit testsuite='': (clean_log 'clover.xml') (clean_log 'junit.xml') (clean_dir 'coverage')
     #!/usr/bin/env bash
     if ! [ "{{testsuite}}" = "" ]; then
       args="--testsuite {{testsuite}}"
@@ -15,7 +22,7 @@ phpunit testsuite='': clean
     fi
     phpunit -c tests/phpunit.xml $args
 
-@phpcs standard='../lunr-coding-standard/Lunr': clean
+@phpcs standard='../lunr-coding-standard/Lunr': (clean_log 'checkstyle.xml')
     phpcs \
       -p \
       --report-full \
@@ -23,13 +30,13 @@ phpunit testsuite='': clean
       --standard={{standard}} \
       src
 
-@phpcbf standard='../lunr-coding-standard/Lunr': clean
+@phpcbf standard='../lunr-coding-standard/Lunr':
     phpcbf \
       -p \
       --standard={{standard}} \
       src
 
-phpstan level='6': clean
+phpstan level='6':
     #!/usr/bin/env bash
     xdebug=$(php -r "echo extension_loaded('xdebug') ? '--xdebug' : '';")
     if [ "{{github_actions}}" = "1" ]; then
@@ -39,10 +46,10 @@ phpstan level='6': clean
     fi
     phpstan analyze src -l {{level}} -c tests/phpstan.neon.dist $xdebug $github
 
-@phploc: clean
+@phploc: (clean_log 'phploc.json')
     phploc --log-json build/logs/phploc.json --count-tests src
 
-@phpcpd: clean
+@phpcpd: (clean_log 'pmd-cpd.xml')
     phpcpd --log-pmd build/logs/pmd-cpd.xml src
 
 dependencies type='dev':
