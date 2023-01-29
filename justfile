@@ -15,19 +15,30 @@ export github_actions := env_var_or_default('GITHUB_ACTIONS', '0')
 
 phpunit testsuite='': (clean_log 'clover.xml') (clean_log 'junit.xml') (clean_dir 'coverage')
     #!/usr/bin/env bash
-    if ! [ "{{testsuite}}" = "" ]; then
-      args="--testsuite {{testsuite}}"
+    if [ "{{github_actions}}" = "1" ]; then
+      args="--log-junit=build/logs/junit.xml --coverage-clover=build/logs/clover.xml"
     else
       args=""
     fi
+    if ! [ "{{testsuite}}" = "" ]; then
+      args+="--testsuite {{testsuite}}"
+    else
+      args+=""
+    fi
     phpunit -c tests/phpunit.xml $args
 
-@phpcs standard='../lunr-coding-standard/Lunr': (clean_log 'checkstyle.xml')
+phpcs standard='../lunr-coding-standard/Lunr': (clean_log 'checkstyle.xml')
+    #!/usr/bin/env bash
+    if [ "{{github_actions}}" = "1" ]; then
+      args="--report-checkstyle=build/logs/checkstyle.xml"
+    else
+      args=""
+    fi
     phpcs \
       -p \
       --report-full \
-      --report-checkstyle=build/logs/checkstyle.xml \
       --standard={{standard}} \
+      $args \
       src
 
 @phpcbf standard='../lunr-coding-standard/Lunr':
@@ -47,10 +58,22 @@ phpstan level='6':
     phpstan analyze src -l {{level}} -c tests/phpstan.neon.dist $xdebug $github
 
 @phploc: (clean_log 'phploc.json')
-    phploc --log-json build/logs/phploc.json --count-tests src
+    #!/usr/bin/env bash
+    if [ "{{github_actions}}" = "1" ]; then
+      args="--log-json build/logs/phploc.json"
+    else
+      args=""
+    fi
+    phploc --count-tests $args src
 
 @phpcpd: (clean_log 'pmd-cpd.xml')
-    phpcpd --log-pmd build/logs/pmd-cpd.xml src
+    #!/usr/bin/env bash
+    if [ "{{github_actions}}" = "1" ]; then
+      args="--log-pmd build/logs/pmd-cpd.xml"
+    else
+      args=""
+    fi
+    phpcpd $args src
 
 @pdepend: (clean_log 'jdepend.xml') (clean_dir 'pdepend')
     pdepend \
