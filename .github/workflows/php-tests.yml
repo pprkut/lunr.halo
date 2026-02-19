@@ -7,14 +7,11 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   php-tests:
-    uses: lunr-php/actions-templates/.github/workflows/php-composer.yml@9386864834d8121190171c18f44927a0492af392 # 0.11.0
+    uses: lunr-php/actions-templates/.github/workflows/php-composer.yml@f74ef263f5d0ff4c00ddc2554b7edf99251aca96 # next
     with:
-      phpstan-level: 10
-      allow-style-failures: false
-      allow-phpstan-failures: false
-      codestyle-branch: '0.11.0'
-      phpcs-whitelist: tests/phpstan.autoload.inc.php tests/test.bootstrap.inc.php
-      php-extensions: uopz
+      coding-standard: 'Lunr'
+      minimum-php-version: '8.3'
       stable-php-versions: '["8.3"]'
       experimental-php-versions: '["8.4","8.5"]'
-      minimum-phpunit-version: '10.5.x'
+      phpcs-whitelist: tests/phpstan.autoload.inc.php tests/test.bootstrap.inc.php
+      php-extensions: uopz
