@@ -11,29 +11,8 @@
 
 $base = __DIR__ . '/..';
 
-if (file_exists($base . '/vendor/autoload.php') == TRUE)
-{
-    // Load composer autoloader.
-    $autoloadFile = $base . '/vendor/autoload.php';
-}
-else
-{
-    // Load decomposer autoloader.
-    $autoloadFile = $base . '/decomposer.autoload.inc.php';
-}
-
-require_once $autoloadFile;
-
-if (file_exists($base . '/vendor/autoload.php') == FALSE)
-{
-    include_once 'Framework/MockObject/Runtime/Interface/Stub.php';
-    include_once 'Framework/MockObject/Runtime/Interface/MockObject.php';
-    include_once 'Framework/Assert.php';
-    include_once 'Framework/Reorderable.php';
-    include_once 'Framework/SelfDescribing.php';
-    include_once 'Framework/Test.php';
-    include_once 'Framework/TestCase.php';
-}
+// Load composer autoloader.
+require_once $base . '/vendor/autoload.php';
 
 // Define application config lookup path
 $paths = [

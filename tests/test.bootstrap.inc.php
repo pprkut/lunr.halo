@@ -22,18 +22,8 @@ set_include_path(
     implode(':', $paths)
 );
 
-if (file_exists($base . '/vendor/autoload.php') == TRUE)
-{
-    // Load composer autoloader.
-    $autoloadFile = $base . '/vendor/autoload.php';
-}
-else
-{
-    // Load decomposer autoloader.
-    $autoloadFile = $base . '/decomposer.autoload.inc.php';
-}
-
-require_once $autoloadFile;
+// Load composer autoloader.
+require_once $base . '/vendor/autoload.php';
 
 if (defined('TEST_STATICS') === FALSE)
 {
