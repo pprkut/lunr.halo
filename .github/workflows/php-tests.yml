@@ -7,7 +7,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   php-tests:
-    uses: lunr-php/actions-templates/.github/workflows/php-composer.yml@f74ef263f5d0ff4c00ddc2554b7edf99251aca96 # next
+    uses: pprkut/lunr-actions/.github/workflows/php-composer.yml@framna
     with:
       coding-standard: 'Lunr'
       minimum-php-version: '8.3'
